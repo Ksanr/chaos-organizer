@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/ksanr/chaos-organizer?svg=true)](https://ci.appveyor.com/project/ksanr/chaos-organizer)
 
 **Демо:** [GitHub Pages](https://ksanr.github.io/chaos-organizer)  
-**Бэкенд API:** [Render](https://chaos-organizer-backend.onrender.com)
+**Бэкенд API:** [pxxl](https://chaos-organizer-backend.pxxl.click/)
 
 ## Реализованные функции
 
@@ -21,7 +21,7 @@
 5. Поддержка emoji (выбор из панели)
 
 ## Запуск локально
-
+```bash
 npm install     # в папках backend и frontend
 npm run dev     # в папке backend - запустить сервер на порту 3000
 npm start       # в папке frontend - в другом терминале запустить клиент на порту 8080

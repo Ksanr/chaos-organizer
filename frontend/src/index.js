@@ -1,9 +1,9 @@
 import './style.css';
 import 'emoji-picker-element';
 
-// Конфигурация API (при деплое заменить на реальный URL бэкенда)
+// Конфигурация API
 const API_BASE = process.env.NODE_ENV === 'production'
-  ? 'https://chaos-organizer-backend.onrender.com'
+  ? 'https://chaos-organizer-backend.pxxl.click/'
   : 'http://localhost:3000';
 
 // DOM элементы
