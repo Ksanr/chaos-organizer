@@ -3,7 +3,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/ksanr/chaos-organizer?svg=true)](https://ci.appveyor.com/project/ksanr/chaos-organizer)
 
 **Демо:** [GitHub Pages](https://ksanr.github.io/chaos-organizer)  
-**Бэкенд API:** [pxxl.click](https://chaos-organizer-backend.pxxl.click/)
+**Бэкенд API:** [pxxl.click](https://chaos-organizer-backend.pxxl.click/)  
 **Исходный код бэкенда:** [Ksanr/chaos-organizer-backend](https://github.com/Ksanr/chaos-organizer-backend)
 
 ---
