@@ -7,8 +7,8 @@ module.exports = {
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    //publicPath: '/chaos-organizer/',
+    //publicPath: '/',
+    publicPath: '/chaos-organizer/',
   },
   devServer: {
     static: './dist',
