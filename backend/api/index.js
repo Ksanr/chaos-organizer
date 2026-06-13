@@ -11,6 +11,9 @@ const multer = require('@koa/multer');
 const app = new Koa();
 const router = new Router();
 
+const serverless = require('serverless-http');
+
+
 // Настройка хранилища для файлов
 const storage = multer.diskStorage({
   destination: './uploads/',
@@ -136,4 +139,6 @@ app.use(router.routes()).use(router.allowedMethods());
 
 // ⚠️ ВАЖНО: для Vercel не используем app.listen()
 // Экспортируем приложение как серверную функцию
-module.exports = app;
+// module.exports = app;
+const handler = serverless(app);
+module.exports = handler;
