@@ -90,7 +90,7 @@ async function loadMessages(reset = false) {
     hasMore = true;
     allMessages = [];
     messagesContainer.innerHTML = '';
-    messagesContainer.scrollTop = 0;
+    messagesContainer.scrollTop = messagesContainer.scrollHeight; // 0;
   }
   if (!hasMore) return;
 
@@ -142,12 +142,11 @@ function renderMessages() {
   }
   // Добавляем сообщения (самые старые сверху, новые снизу)
   allMessages.forEach(msg => {
-    const isOwn = false; // здесь можно реализовать определение отправителя, но для демо все сообщения чужие
-    const el = createMessageElement(msg, isOwn);
+    const el = createMessageElement(msg, false);
     container.append(el);
   });
   // Прокручиваем вниз
-  container.scrollTop = container.scrollHeight;
+  //container.scrollTop = container.scrollHeight;
 }
 
 // Загрузка закреплённого сообщения
