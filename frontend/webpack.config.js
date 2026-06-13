@@ -1,12 +1,3 @@
-const Koa = require('koa');
-const Router = require('@koa/router');
-const cors = require('@koa/cors');
-const bodyParser = require('koa-bodyparser');
-const serve = require('koa-static');
-const path = require('path');
-const { v4: uuidv4 } = require('uuid');
-const multer = require('@koa/multer');
-
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -16,7 +7,6 @@ module.exports = {
   output: {
     filename: 'bundle.[contenthash].js',
     path: path.resolve(__dirname, 'dist'),
-    //publicPath: '/',
     publicPath: '/chaos-organizer/',
   },
   devServer: {
@@ -57,4 +47,3 @@ module.exports = {
     }),
   ],
 };
-module.exports = app;
