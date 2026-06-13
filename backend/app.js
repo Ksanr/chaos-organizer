@@ -2,30 +2,22 @@ const Koa = require('koa');
 const Router = require('@koa/router');
 const cors = require('@koa/cors');
 const bodyParser = require('koa-bodyparser');
-const serve = require('koa-static');
 const logger = require('koa-logger');
-const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const multer = require('@koa/multer');
+
+// multer и serve закомментированы, так как загрузка файлов отключена на сервере
+// const multer = require('@koa/multer');
+// const serve = require('koa-static');
+// const path = require('path');
 
 const app = new Koa();
 const router = new Router();
 
-const serverless = require('serverless-http');
-
-
-// Настройка хранилища для файлов
-const storage = multer.diskStorage({
-  destination: './uploads/',
-  filename: (req, file, cb) => {
-    const unique = uuidv4() + path.extname(file.originalname);
-    cb(null, unique);
-  },
-});
-const upload = multer({ storage });
-
 // Хранилище сообщений в памяти
 const messages = [];
+const PAGE_SIZE = 10;
+
+// Демо-сообщения
 const demoMessages = [
   {
     id: uuidv4(),
@@ -44,19 +36,17 @@ const demoMessages = [
   {
     id: uuidv4(),
     type: 'text',
-    text: 'Попробуйте прикрепить изображение, видео или аудио через кнопку 📎 или перетаскиванием в чат.',
+    text: 'Попробуйте закрепить сообщение (иконка 📌) или отправить геолокацию (📍).',
     timestamp: Date.now() - 3600000,
     pinned: false,
   },
 ];
 messages.push(...demoMessages);
-const PAGE_SIZE = 10;
 
 // Middleware
 app.use(logger());
 app.use(cors({ origin: '*' }));
 app.use(bodyParser());
-app.use(serve('./uploads'));
 
 // Префикс для всех API-роутов
 router.prefix('/api');
@@ -77,8 +67,9 @@ router.get('/messages', (ctx) => {
   };
 });
 
+// Роут для создания текстового сообщения (поддерживает и геолокацию)
 router.post('/messages/text', (ctx) => {
-  const { text, pinned = false, geo = null, isCommand = false, commandAnswer = null } = ctx.request.body;
+  const { text, pinned = false, geo = null } = ctx.request.body;
   const message = {
     id: uuidv4(),
     type: 'text',
@@ -86,16 +77,12 @@ router.post('/messages/text', (ctx) => {
     timestamp: Date.now(),
     pinned,
     geo,
-    isCommand,
-    commandAnswer,
   };
   messages.push(message);
   ctx.body = message;
 });
 
-// Роут для загрузки файла — закомментирован, так как Vercel не хранит файлы постоянно
-// router.post('/messages/file', upload.single('file'), (ctx) => { ... });
-
+// Роут для поиска сообщений
 router.get('/messages/search', (ctx) => {
   const { q } = ctx.query;
   if (!q) {
@@ -105,13 +92,14 @@ router.get('/messages/search', (ctx) => {
   const lowerQ = q.toLowerCase();
   const results = messages.filter(msg => {
     if (msg.type === 'text') return msg.text.toLowerCase().includes(lowerQ);
-    if (msg.type !== 'text' && msg.originalName) return msg.originalName.toLowerCase().includes(lowerQ);
+    // Для файлов поиск по originalName — но файлы отключены, поэтому только текст
     return false;
   });
-  results.sort((a, b) => a.timestamp - b.timestamp);
+  results.sort((a, b) => b.timestamp - a.timestamp);
   ctx.body = results.slice(-50);
 });
 
+// Роут для закрепления сообщения (только одно)
 router.post('/messages/pin/:id', (ctx) => {
   const { id } = ctx.params;
   messages.forEach(msg => { msg.pinned = false; });
@@ -125,20 +113,50 @@ router.post('/messages/pin/:id', (ctx) => {
   }
 });
 
+// Роут для удаления закрепления
 router.delete('/messages/pin', (ctx) => {
   messages.forEach(msg => { msg.pinned = false; });
   ctx.body = { success: true };
 });
 
+// Роут для получения закреплённого сообщения
 router.get('/messages/pinned', (ctx) => {
   const pinned = messages.find(m => m.pinned === true);
   ctx.body = pinned || null;
 });
 
+/* =================================================================
+   Роут для загрузки файлов (изображения, видео, аудио)
+   ЗАКОММЕНТИРОВАН, так как на бесплатном тарифе Pxxl возникает
+   ошибка Disk quota exceeded. При локальном запуске
+   эта функция полностью работоспособна.
+   =================================================================
+router.post('/messages/file', upload.single('file'), (ctx) => {
+  const { pinned = false, geo = null } = ctx.request.body;
+  const file = ctx.file;
+  const ext = path.extname(file.filename).toLowerCase();
+  let type = 'file';
+  if (['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext)) type = 'image';
+  else if (['.mp4', '.webm', '.ogg'].includes(ext)) type = 'video';
+  else if (['.mp3', '.wav', '.ogg'].includes(ext)) type = 'audio';
+
+  const message = {
+    id: uuidv4(),
+    type,
+    fileUrl: `/${file.filename}`,
+    originalName: file.originalname,
+    timestamp: Date.now(),
+    pinned,
+    geo,
+  };
+  messages.push(message);
+  ctx.body = message;
+});
+*/
+
 app.use(router.routes()).use(router.allowedMethods());
 
-// ⚠️ ВАЖНО: для Vercel не используем app.listen()
-// Экспортируем приложение как серверную функцию
-// module.exports = app;
-const handler = serverless(app);
-module.exports = handler;
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

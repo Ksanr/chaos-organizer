@@ -3,7 +3,7 @@ import 'emoji-picker-element';
 
 // Конфигурация API
 const API_BASE = process.env.NODE_ENV === 'production'
-  ? 'https://chaos-organizer.vercel.app/'
+  ? 'https://chaos-organizer-backend.pxxl.click'
   : 'http://localhost:3000';
 
 // DOM элементы
