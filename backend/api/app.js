@@ -28,7 +28,7 @@ const demoMessages = [
     id: uuidv4(),
     type: 'text',
     text: '🎉 Добро пожаловать в Chaos Organizer! Это демо-сообщение.',
-    timestamp: Date.now() - 86400000, // сутки назад
+    timestamp: Date.now() - 86400000,
     pinned: false,
   },
   {
@@ -53,12 +53,12 @@ const PAGE_SIZE = 10;
 app.use(logger());
 app.use(cors({ origin: '*' }));
 app.use(bodyParser());
-app.use(serve('./uploads')); // раздаём загруженные файлы
+app.use(serve('./uploads'));
 
 // Префикс для всех API-роутов
 router.prefix('/api');
 
-// Роут для получения сообщений с пагинацией (ленивая подгрузка)
+// Роут для получения сообщений с пагинацией
 router.get('/messages', (ctx) => {
   const { page = 1 } = ctx.query;
   const pageNum = parseInt(page, 10);
@@ -74,7 +74,6 @@ router.get('/messages', (ctx) => {
   };
 });
 
-// Роут для создания текстового сообщения
 router.post('/messages/text', (ctx) => {
   const { text, pinned = false, geo = null, isCommand = false, commandAnswer = null } = ctx.request.body;
   const message = {
@@ -91,31 +90,9 @@ router.post('/messages/text', (ctx) => {
   ctx.body = message;
 });
 
-// Роут для загрузки файла (изображение, видео, аудио)
-/* закомментирую для очистки сервера */
-router.post('/messages/file', upload.single('file'), (ctx) => {
-  const { pinned = false, geo = null } = ctx.request.body;
-  const file = ctx.file;
-  const ext = path.extname(file.filename).toLowerCase();
-  let type = 'file';
-  if (['.jpg', '.jpeg', '.png', '.gif', '.webp'].includes(ext)) type = 'image';
-  else if (['.mp4', '.webm', '.ogg'].includes(ext)) type = 'video';
-  else if (['.mp3', '.wav', '.ogg'].includes(ext)) type = 'audio';
+// Роут для загрузки файла — закомментирован, так как Vercel не хранит файлы постоянно
+// router.post('/messages/file', upload.single('file'), (ctx) => { ... });
 
-  const message = {
-    id: uuidv4(),
-    type,
-    fileUrl: `/${file.filename}`,
-    originalName: file.originalname,
-    timestamp: Date.now(),
-    pinned,
-    geo,
-  };
-  messages.push(message);
-  ctx.body = message;
-});
-
-// Роут для поиска сообщений (доп. функция)
 router.get('/messages/search', (ctx) => {
   const { q } = ctx.query;
   if (!q) {
@@ -129,13 +106,11 @@ router.get('/messages/search', (ctx) => {
     return false;
   });
   results.sort((a, b) => a.timestamp - b.timestamp);
-  ctx.body = results.slice(-50); // последние 50 результатов
+  ctx.body = results.slice(-50);
 });
 
-// Роут для закрепления сообщения (только одно)
 router.post('/messages/pin/:id', (ctx) => {
   const { id } = ctx.params;
-  // Сначала снимаем закрепление со всех
   messages.forEach(msg => { msg.pinned = false; });
   const msg = messages.find(m => m.id === id);
   if (msg) {
@@ -147,13 +122,11 @@ router.post('/messages/pin/:id', (ctx) => {
   }
 });
 
-// Роут для удаления закрепления
 router.delete('/messages/pin', (ctx) => {
   messages.forEach(msg => { msg.pinned = false; });
   ctx.body = { success: true };
 });
 
-// Роут для получения закреплённого сообщения
 router.get('/messages/pinned', (ctx) => {
   const pinned = messages.find(m => m.pinned === true);
   ctx.body = pinned || null;
@@ -161,7 +134,6 @@ router.get('/messages/pinned', (ctx) => {
 
 app.use(router.routes()).use(router.allowedMethods());
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// ⚠️ ВАЖНО: для Vercel не используем app.listen()
+// Экспортируем приложение как серверную функцию
+module.exports = app;

@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
     "build": "webpack --mode production",
-    "start": "node app.js"
+    "start": "node api/index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "@koa/cors": "^5.0.0",
     "@koa/multer": "^4.0.0",
     "@koa/router": "^15.6.0",
+    "@vercel/node": "^5.8.17",
     "koa": "^3.2.1",
     "koa-bodyparser": "^4.4.1",
     "koa-logger": "^4.0.0",
