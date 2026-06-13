@@ -144,3 +144,8 @@ button:hover, .file-label:hover {
   border-bottom: 1px solid #eee;
   cursor: pointer;
 }
+
+/* Подавляем предупреждение для браузеров, не поддерживающих -moz-focus-inner */
+:-moz-focus-inner {
+  border: 0;
+}

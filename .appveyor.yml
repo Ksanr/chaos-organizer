@@ -1,0 +1,26 @@
+# Этот файл настраивает среду для Linux и отключает стандартную сборку MSBuild.
+image: Ubuntu2004
+stack: node 16
+build: off
+
+environment:
+  nodejs_version: "16"
+
+branches:
+  only:
+    - main
+  except:
+    - gh-pages
+
+install:
+  - cd frontend
+  - npm install
+
+build_script:
+  - npm run build
+
+cache:
+  - frontend/node_modules
+
+test: off
+deploy: off
