@@ -3,7 +3,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/github/ksanr/chaos-organizer?svg=true)](https://ci.appveyor.com/project/ksanr/chaos-organizer)
 
 **Демо:** [GitHub Pages](https://ksanr.github.io/chaos-organizer)  
-**Бэкенд API:** [pxxl.click](https://chaos-organizer-backend.pxxl.click/) — исходный код: [Ksanr/chaos-organizer-backend](https://github.com/Ksanr/chaos-organizer-backend)
+**Бэкенд API:** [pxxl.click](https://chaos-organizer-backend.pxxl.click/)
+**Исходный код бэкенда:** [Ksanr/chaos-organizer-backend](https://github.com/Ksanr/chaos-organizer-backend)
 
 ---
 
@@ -22,7 +23,7 @@ Chaos Organizer — веб-приложение в стиле мессендже
 | Функция                      | Описание                                                                                                                                                                                                              |
 |------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | **Текстовые сообщения и ссылки** | Отправка обычного текста. Любая ссылка (http:// или https://) становится кликабельной и открывается в новой вкладке.                                                                                                  |
-| **Загрузка файлов**          | Изображения, видео и аудио загружаются через кнопку «📎» или перетаскиванием (Drag & Drop) в область чата. <br/> * Данная функция работает только локально, сервер Pxxl не выдаёт ошибки при активации данной функции |
+| **Загрузка файлов**  (изображения, видео, аудио) | Изображения, видео и аудио загружаются через кнопку «📎» или перетаскиванием (Drag & Drop) в область чата. <br/> * Данная функция работает только локально, сервер Pxxl не выдаёт ошибки при активации данной функции |
 | **Скачивание файлов**        | Для любого загруженного файла доступно скачивание на компьютер (по клику на имя файла).<br/> * См. выше                                                                                                               |
 | **Ленивая подгрузка**        | Сначала показываются последние 10 сообщений. При прокрутке вверх подгружаются следующие 10 и так далее.                                                                                                               |
 
@@ -41,7 +42,7 @@ Chaos Organizer — веб-приложение в стиле мессендже
 ## Технологии
 
 - **Фронтенд:** JavaScript (ES6+), Webpack, Babel, ESLint, CSS3.
-- **Бэкенд:** Node.js, Koa, `@koa/router`, `@koa/cors`, `koa-bodyparser`, `@koa/multer`.
+- **Бэкенд:** Node.js, Koa, `@koa/router`, `@koa/cors`, `koa-bodyparser`, `@koa/multer`, `uuid`.
 - **Деплой:**  
   - Фронтенд — GitHub Pages (ветка `gh-pages`).  
   - Бэкенд — Pxxl.app (бесплатный хостинг, но есть лимит по объёму, что не позволяет показать работу с файлами).
@@ -50,31 +51,36 @@ Chaos Organizer — веб-приложение в стиле мессендже
 
 ## Запуск локально
 
+1. **Клонируйте репозиторий**
 ```bash
-# Клонируйте репозиторий
 git clone https://github.com/Ksanr/chaos-organizer.git
 cd chaos-organizer
-
-# Запустите бэкенд (порт 3000)
+```
+2. **Запустите бэкенд** (порт 3000)
+```bash
 cd backend
 npm install
 npm run dev
-
-# В другом терминале запустите фронтенд (порт 8080)
+```
+3. **В другом терминале запустите фронтенд** (порт 8080)
+```bash
 cd frontend
 npm install
 npm start
 ```
-
+4. **Откройте http://localhost:8080**
+```bash
+Убедитесь, что порты 3000 и 8080 не заняты.
+```
 ## Структура проекта
 ```
 chaos-organizer/
 ├── backend/               # серверная часть
-│   ├── app.js             # основной файл
+│   ├── app.js             # основной файл (Koa)
 │   ├── uploads/           # загруженные файлы
 │   └── package.json
 ├── frontend/              # клиентская часть
-│   ├── src/               # исходники
+│   ├── src/               # исходники (index.js, style.css, index.html)
 │   ├── dist/              # сборка Webpack
 │   ├── webpack.config.js
 │   └── package.json
